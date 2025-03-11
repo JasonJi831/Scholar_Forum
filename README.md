@@ -49,7 +49,15 @@ Our project is an **academic discussion platform** designed to facilitate commun
 - 🔖 Use **bookmarking features** to easily return to important discussions.
 
 By organizing conversations around academic interests, our platform helps users **efficiently engage in meaningful research discussions** and build scholarly communities.
+<<<<<<< HEAD
 >>>>>>> 969e1e1 (add brief summary of the project)
 =======
 #Hongkai Liu edited
 >>>>>>> a121fb8 (second push)
+=======
+
+# Milestone documents 
+[Checkout Milestrone1](docs/milestone1.pdf)
+
+
+>>>>>>> 066d99d (add m1 doc)
