@@ -4,3 +4,18 @@
 #Jason edited
 #Hongkai edited
 #Cillian Dong edited
+
+**Brief Project Summary**
+
+# 📚 Academic Discussion Platform
+
+## 🚀 Project Summary
+
+Our project is an **academic discussion platform** designed to facilitate communication among **researchers and scholars**. It enables users to:
+
+- 💡 **Share insights** and discuss emerging research topics.
+- 🧠 **Connect with peers** in their academic fields.
+- 📂 Engage in **structured discussions** categorized by **disciplines and interest-based groups**.
+- 🔖 Use **bookmarking features** to easily return to important discussions.
+
+By organizing conversations around academic interests, our platform helps users **efficiently engage in meaningful research discussions** and build scholarly communities.
