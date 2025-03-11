@@ -3,6 +3,7 @@
 # Please include any additional information that will be useful to your TA in your README! Remember, your goal is to make it easy for your TA to give you points!
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # 📚 Academic Discussion Platform
 
 ## 🚀 Project Summary
@@ -31,6 +32,8 @@ By organizing conversations around academic interests, our platform helps users 
 >>>>>>> dcad69b (second push)
 =======
 
+=======
+>>>>>>> 4acdc05 (update readme, delete git test)
 **Brief Project Summary**
 
 # 📚 Academic Discussion Platform
