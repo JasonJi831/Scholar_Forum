@@ -14,7 +14,7 @@
 Our project is an **academic discussion platform** designed to facilitate communication among **researchers and scholars**. It enables users to:
 
 - 💡 **Share insights** and discuss emerging research topics.
-- 🧠 **Connect with peers** in their academic fields.
+- 💻 **Connect with peers** in their academic fields.
 - 📂 Engage in **structured discussions** categorized by **disciplines and interest-based groups**.
 - 🔖 Use **bookmarking features** to easily return to important discussions.
 
