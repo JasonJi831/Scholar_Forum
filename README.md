@@ -26,6 +26,7 @@ By organizing conversations around academic interests, our platform helps users 
 # The project timeline is located in the PROJECT_TIMELINE.md file on the main branch.
 =======
 #Jason edited
+<<<<<<< HEAD
 #Hongkai edited
 #Cillian Dong edited
 <<<<<<< HEAD
@@ -49,3 +50,6 @@ Our project is an **academic discussion platform** designed to facilitate commun
 
 By organizing conversations around academic interests, our platform helps users **efficiently engage in meaningful research discussions** and build scholarly communities.
 >>>>>>> 969e1e1 (add brief summary of the project)
+=======
+#Hongkai Liu edited
+>>>>>>> a121fb8 (second push)
