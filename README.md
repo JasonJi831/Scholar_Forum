@@ -57,7 +57,8 @@ By organizing conversations around academic interests, our platform helps users 
 =======
 
 # Milestone documents 
-[Checkout Milestrone 1](docs/milestone1.pdf)
+[Checkout Milestrone 1](docs/milestone1.pdf) 
+
 [Checkout Milestrone 2](docs/milestone2.pdf)
 
 
