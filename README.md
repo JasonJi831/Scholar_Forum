@@ -16,3 +16,7 @@ Our project is an **academic discussion platform** designed to facilitate commun
 
 By organizing conversations around academic interests, our platform helps users **efficiently engage in meaningful research discussions** and build scholarly communities.
 
+# Milestone documents 
+[Checkout Milestrone1](docs/milestone1.pdf)
+
+
