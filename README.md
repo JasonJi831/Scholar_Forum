@@ -1,10 +1,6 @@
 # project_template
 # Please include any additional information that will be useful to your TA in your README! Remember, your goal is to make it easy for your TA to give you points!
 
-#Jason edited
-#Hongkai edited
-#Cillian Dong edited
-
 **Brief Project Summary**
 
 # 📚 Academic Discussion Platform
@@ -19,3 +15,8 @@ Our project is an **academic discussion platform** designed to facilitate commun
 - 🔖 Use **bookmarking features** to easily return to important discussions.
 
 By organizing conversations around academic interests, our platform helps users **efficiently engage in meaningful research discussions** and build scholarly communities.
+
+# Milestone documents 
+[Checkout Milestrone1](docs/milestone1.pdf)
+
+
