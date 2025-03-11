@@ -2,6 +2,7 @@
 
 # Please include any additional information that will be useful to your TA in your README! Remember, your goal is to make it easy for your TA to give you points!
 
+<<<<<<< HEAD
 # 📚 Academic Discussion Platform
 
 ## 🚀 Project Summary
@@ -22,3 +23,8 @@ By organizing conversations around academic interests, our platform helps users 
 [Checkout Milestrone 2](docs/milestone2.pdf)
 
 # The project timeline is located in the PROJECT_TIMELINE.md file on the main branch.
+=======
+#Jason edited
+#Hongkai edited
+#Cillian Dong edited
+>>>>>>> dcad69b (second push)
