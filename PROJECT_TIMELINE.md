@@ -83,4 +83,10 @@
 ### Challenges & Remaining Work:
 - Avoiding runtime errors during the live demo.
 - Preparing for possible TA questions on implementation.
+<<<<<<< HEAD
 - Making sure the demo fits within 30 minutes.
+=======
+- Making sure the demo fits within 30 minutes.
+
+
+>>>>>>> 62a8144 (added project timeline file)

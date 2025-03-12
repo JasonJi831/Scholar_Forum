@@ -1,4 +1,5 @@
 # project_template
+<<<<<<< HEAD
 
 # Please include any additional information that will be useful to your TA in your README! Remember, your goal is to make it easy for your TA to give you points!
 
@@ -36,6 +37,10 @@ By organizing conversations around academic interests, our platform helps users 
 =======
 >>>>>>> 4acdc05 (update readme, delete git test)
 **Brief Project Summary**
+=======
+
+# Please include any additional information that will be useful to your TA in your README! Remember, your goal is to make it easy for your TA to give you points!
+>>>>>>> 62a8144 (added project timeline file)
 
 # 📚 Academic Discussion Platform
 
@@ -56,10 +61,14 @@ By organizing conversations around academic interests, our platform helps users 
 >>>>>>> a121fb8 (second push)
 =======
 
-# Milestone documents 
-[Checkout Milestrone 1](docs/milestone1.pdf) 
+# Previous Milestone documents
+[Checkout Milestrone 1](docs/milestone1.pdf)
 
 [Checkout Milestrone 2](docs/milestone2.pdf)
 
+<<<<<<< HEAD
 
 >>>>>>> 066d99d (add m1 doc)
+=======
+# The project timeline is located in the PROJECT_TIMELINE.md file on the main branch.
+>>>>>>> 62a8144 (added project timeline file)
