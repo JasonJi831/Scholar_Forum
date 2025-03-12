@@ -1,6 +1,7 @@
 # project_template
-
 # Please include any additional information that will be useful to your TA in your README! Remember, your goal is to make it easy for your TA to give you points!
+
+**Brief Project Summary**
 
 # 📚 Academic Discussion Platform
 
@@ -15,10 +16,9 @@ Our project is an **academic discussion platform** designed to facilitate commun
 
 By organizing conversations around academic interests, our platform helps users **efficiently engage in meaningful research discussions** and build scholarly communities.
 
-# Previous Milestone documents
-
-[Checkout Milestrone 1](docs/milestone1.pdf)
+# Milestone documents 
+[Checkout Milestrone 1](docs/milestone1.pdf) 
 
 [Checkout Milestrone 2](docs/milestone2.pdf)
 
-# The project timeline is located in the PROJECT_TIMELINE.md file on the main branch.
+
