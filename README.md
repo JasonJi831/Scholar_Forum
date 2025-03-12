@@ -21,4 +21,5 @@ By organizing conversations around academic interests, our platform helps users 
 
 [Checkout Milestrone 2](docs/milestone2.pdf)
 
+# The project timeline is located in the PROJECT_TIMELINE.md file on the main branch.
 
