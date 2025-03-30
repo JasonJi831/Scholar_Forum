@@ -17,8 +17,11 @@ Our project is an **academic discussion platform** designed to facilitate commun
 By organizing conversations around academic interests, our platform helps users **efficiently engage in meaningful research discussions** and build scholarly communities.
 
 # Milestone documents 
-[Checkout Milestrone 1](docs/milestone1.pdf) 
+[Checkout Milestrone 1](milestone_docs/milestone1.pdf) 
 
-[Checkout Milestrone 2](docs/milestone2.pdf)
+[Checkout Milestrone 2](milestone_docs/milestone2.pdf)
+
+[Checkout Milestrone 3](milestone_docs/milestone3.pdf)
+
 
 ### The project timeline is located in the PROJECT_TIMELINE.md file on the main branch.
