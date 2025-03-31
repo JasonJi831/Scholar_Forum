@@ -81,47 +81,49 @@ async function testOracleConnection() {
 // ==========================
 // Insert a Post (with FK checks)
 // Usage: await insertPost(content, email, aname)
-// If Area doesn't exist, it will be auto-inserted with whetherStem = true
 // ==========================
 async function insertPost(content, email, aname) {
     return await withOracleDB(async (connection) => {
-        const userCheck = await connection.execute(
-            `SELECT COUNT(*) FROM User WHERE email = :email`,
-            [email]
-        );
-        if (userCheck.rows[0][0] === 0) {
-            throw new Error(`User with email "${email}" does not exist.`);
-        }
-
-        const areaCheck = await connection.execute(
-            `SELECT COUNT(*) FROM Area WHERE aname = :aname`,
-            [aname]
-        );
-        if (areaCheck.rows[0][0] === 0) {
-            await connection.execute(
-                `INSERT INTO Area (aname, whetherStem) VALUES (:aname, :isStem)`,
-                [aname, true]
+        try {
+            // 检查用户是否存在
+            const userCheck = await connection.execute(
+                `SELECT COUNT(*) FROM "USER" WHERE email = :email`,
+                [email]
             );
+            if (userCheck.rows[0][0] === 0) {
+                throw new Error(`User with email "${email}" does not exist.`);
+            }
+
+            // 检查区域是否存在
+            const areaCheck = await connection.execute(
+                `SELECT COUNT(*) FROM AREA WHERE aname = :aname`,
+                [aname]
+            );
+            if (areaCheck.rows[0][0] === 0) {
+                throw new Error(`Area "${aname}" does not exist.`);
+            }
+
+            // 获取当前最大的poid
+            const idResult = await connection.execute(`SELECT MAX(poid) FROM POST`);
+            const maxPoid = idResult.rows[0][0] || 0;
+            const newPoid = maxPoid + 1;
+
+            // 获取当前时间
+
+            // 插入新的帖子
+            await connection.execute(
+                `INSERT INTO POST (poid, content, time, email, aname)
+                 VALUES (:poid, :content, SYSTIMESTAMP, :email, :aname)`,
+                [newPoid, content, email, aname],
+                { autoCommit: true }
+            );
+
+            console.log(`Post inserted with ID: ${newPoid}, Content: ${content}, Email: ${email}, Area: ${aname}`);
+            return true;
+        } catch (err) {
+            console.error('Error inserting post:', err.message);
+            return false;
         }
-
-        const idResult = await connection.execute(`SELECT MAX(poid) FROM Post`);
-        const maxPoid = idResult.rows[0][0] || 0;
-        const newPoid = maxPoid + 1;
-
-        const now = new Date();
-        const timeStr = now.toTimeString().split(" ")[0]; 
-
-        await connection.execute(
-            `INSERT INTO Post (poid, content, time, email, aname)
-             VALUES (:poid, :content, TO_TIMESTAMP(:time, 'HH24:MI:SS'), :email, :aname)`,
-            [newPoid, content, timeStr, email, aname],
-            { autoCommit: true }
-        );
-
-        return true;
-    }).catch((err) => {
-        console.error(err.message);
-        return false;
     });
 }
 
@@ -497,11 +499,30 @@ async function listPostComments(poid) {
     });
 }
 
+async function listAllAreas() {
+    return await withOracleDB(async (connection) => {
+        try {
+            // 从数据库中获取所有区域名称
+            const result = await connection.execute(
+                `SELECT DISTINCT aname FROM Area`
+            );
+            console.log('Areas retrieved from DB:', result.rows);
+
+            // 将查询结果转换为对象数组
+            return result.rows.map(row => ({ aname: row[0] }));
+        } catch (err) {
+            console.error('Error fetching areas:', err.message);
+            throw err;
+        }
+    });
+}
+
 //
 module.exports = {
     testOracleConnection,
     listPosts,
     listPostComments,
+    listAllAreas,
     // listPapers,
     insertPost,
     updatePost, 

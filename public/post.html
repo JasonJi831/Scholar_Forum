@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Explore Posts</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        .post-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        }
+        .post-card {
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #fff;
+        }
+        .post-card h2 {
+            margin: 0 0 5px;
+            font-size: 1.5em;
+        }
+        .post-card p {
+            margin: 5px 0;
+        }
+        .post-card small {
+            color: #666;
+        }
+        .btn-refresh, .btn-submit {
+            margin: 10px;
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .input-field, .select-field, .textarea-field {
+            margin: 5px 0;
+            padding: 8px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .textarea-field {
+            height: 100px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <div class="post-container">
+        <h1>📑 Explore Posts</h1>
+        
+        <!-- Create new post -->
+        <div>
+            <textarea id="postContent" class="textarea-field" placeholder="Write something..."></textarea>
+            <select id="postAname" class="select-field"></select>
+            <button class="btn-submit" onclick="createPost()">➕ Add Post</button>
+        </div>
+
+        <button class="btn-refresh" onclick="loadPosts()">🔄 Refresh Posts</button>
+        <div id="postList"></div>
+    </div>
+
+    <script>
+        async function loadAreas() {
+            try {
+                const response = await fetch('/allAreas', { method: 'GET' });
+                if (!response.ok) throw new Error("Failed to load areas");
+
+                const result = await response.json();
+                const areas = result.data || [];
+                const areaSelect = document.getElementById("postAname");
+
+                areaSelect.innerHTML = "<option value=''>Select Area</option>";
+
+                areas.forEach(area => {
+                    const option = document.createElement("option");
+                    option.value = area.aname;
+                    option.textContent = area.aname;
+                    areaSelect.appendChild(option);
+                });
+            } catch (err) {
+                console.error('Error loading areas:', err);
+                alert("Failed to load areas.");
+            }
+        }
+
+        async function loadPosts() {
+            try {
+                const response = await fetch('/allPosts', { method: 'GET' });
+                if (!response.ok) throw new Error("Failed to load posts");
+
+                const result = await response.json();
+                const posts = result.data || [];
+                const postList = document.getElementById("postList");
+                postList.innerHTML = ""; 
+
+                if (posts.length === 0) {
+                    postList.innerHTML = "<p>No posts available at the moment.</p>";
+                    return;
+                }
+
+                posts.forEach(post => {
+                    const postCard = document.createElement("div");
+                    postCard.className = "post-card";
+                    postCard.innerHTML = `
+                        <h2>${post.content}</h2>
+                        <p>By: ${post.email} | Area: ${post.aname}</p>
+                        <small>Posted on: ${post.time}</small>
+                    `;
+                    postList.appendChild(postCard);
+                });
+            } catch (err) {
+                console.error('Error loading posts:', err);
+                alert("Failed to load posts. Please try again later.");
+            }
+        }
+
+        async function createPost() {
+            const content = document.getElementById("postContent").value.trim();
+            const email = localStorage.getItem("userEmail");
+            const aname = document.getElementById("postAname").value;
+
+            if (!content || !email || !aname) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            try {
+                const response = await fetch('/post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content, email, aname })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message || "Post created successfully!");
+                    loadPosts();
+                    document.getElementById("postContent").value = "";  // Clear input after post
+                } else {
+                    alert(result.error || "Failed to create post.");
+                }
+            } catch (err) {
+                console.error('Error creating post:', err);
+                alert("Failed to create post. Please try again.");
+            }
+        }
+
+        // 页面加载时加载区域和帖子
+        window.onload = () => {
+            loadAreas();
+            loadPosts();
+        };
+    </script>
+</body>
+</html>
