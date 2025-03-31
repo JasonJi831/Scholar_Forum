@@ -451,8 +451,12 @@ async function registerUser(email, name) {
 //
 module.exports = {
     testOracleConnection,
+    // listPosts,
+    // listPostComments,
+    // listPapers,
     insertPost,
     updatePost, 
+    // deletePost,
     deleteAuthorCascade,
     selectPapers,
     projectAuthor,
