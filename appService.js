@@ -480,7 +480,7 @@ async function registerUser(email, name) {
 // Usage: await listPostCommentsWithUser(poid)
 // Returns: [ [content, name], ... ]
 // ==========================
-async function listPostCommentsWithUser(poid) {
+async function listPostComments(poid) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `SELECT C.content, U.name
