@@ -305,6 +305,35 @@ async function getUsersWithMinPosts(minPosts) {
 }
 
 
+async function getTopAuthorsPerArea() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT A.name, P.aname, COUNT(*) AS num_papers
+             FROM Author A
+             JOIN Wrote W ON A.aid = W.aid
+             JOIN Paper P ON W.pid = P.pid
+             GROUP BY A.name, P.aname
+             HAVING COUNT(*) > (
+                SELECT AVG(sub.count_per_author)
+                FROM (
+                    SELECT COUNT(*) AS count_per_author
+                    FROM Author A2
+                    JOIN Wrote W2 ON A2.aid = W2.aid
+                    JOIN Paper P2 ON W2.pid = P2.pid
+                    WHERE P2.aname = P.aname
+                    GROUP BY A2.name
+                ) sub
+             )`
+        );
+        return result.rows;
+    }).catch((err) => {
+        console.error(err.message);
+        return [];
+    });
+}
+
+
+
 
 
 
@@ -318,5 +347,6 @@ module.exports = {
     projectAuthor,
     findAuthorsByArea,
     countPapersPerArea,
-    getUsersWithMinPosts
+    getUsersWithMinPosts,
+    getTopAuthorsPerArea
 };
