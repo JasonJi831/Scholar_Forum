@@ -125,6 +125,24 @@ async function insertPost(content, email, aname) {
     });
 }
 
+// ==========================
+// List all posts
+// Usage: await listPosts()
+// Returns an array of all post records
+// ==========================
+async function listPosts() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT poid, content, TO_CHAR(time, 'HH24:MI:SS') AS time, email, aname
+             FROM Post
+             ORDER BY poid`
+        );
+        return result.rows;
+    }).catch((err) => {
+        console.error(err.message);
+        return [];
+    });
+}
 
 // ==========================
 // Update a Post (partial updates supported)
