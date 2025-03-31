@@ -76,9 +76,13 @@ async function testOracleConnection() {
     });
 }
 
+// ==========================
+// Insert a Post (with FK checks)
+// Usage: await insertPost(poid, content, time, email, aname)
+// If Area doesn't exist, it will be auto-inserted with whetherStem = true
+// ==========================
 async function insertPost(poid, content, time, email, aname) {
     return await withOracleDB(async (connection) => {
-        // Step 1: Check if email exists in User
         const userCheck = await connection.execute(
             `SELECT COUNT(*) FROM User WHERE email = :email`,
             [email]
@@ -87,20 +91,17 @@ async function insertPost(poid, content, time, email, aname) {
             throw new Error(`User with email "${email}" does not exist.`);
         }
 
-        // Step 2: Check if Area exists
         const areaCheck = await connection.execute(
             `SELECT COUNT(*) FROM Area WHERE aname = :aname`,
             [aname]
         );
         if (areaCheck.rows[0][0] === 0) {
-            // Optional: insert the Area if not exists
             await connection.execute(
                 `INSERT INTO Area (aname, whetherStem) VALUES (:aname, :isStem)`,
-                [aname, true]  // Stem is TRUE by defult
+                [aname, true]
             );
         }
 
-        // Step 3: Insert into Post
         await connection.execute(
             `INSERT INTO Post (poid, content, time, email, aname)
              VALUES (:poid, :content, TO_TIMESTAMP(:time, 'HH24:MI:SS'), :email, :aname)`,
@@ -115,6 +116,11 @@ async function insertPost(poid, content, time, email, aname) {
     });
 }
 
+// ==========================
+// Update a Post (partial updates supported)
+// Usage: await updatePost(poid, { content, time, email, aname })
+// If updated email or aname doesn't exist, it throws an error
+// ==========================
 async function updatePost(poid, updatedFields) {
     return await withOracleDB(async (connection) => {
         const setClauses = [];
@@ -168,6 +174,11 @@ async function updatePost(poid, updatedFields) {
     });
 }
 
+// ==========================
+// Delete an Author (cascade delete Wrote entries)
+// Usage: await deleteAuthorCascade(aid)
+// If author doesn't exist, returns false
+// ==========================
 async function deleteAuthorCascade(aid) {
     return await withOracleDB(async (connection) => {
         const authorCheck = await connection.execute(
@@ -197,6 +208,13 @@ async function deleteAuthorCascade(aid) {
     });
 }
 
+// ==========================
+// Select Papers by Conditions (with AND/OR logic)
+// Usage: await selectPapers([
+//   { attribute: "aname", operator: "=", value: "AI", logic: "AND" },
+//   { attribute: "publishedDate", operator: ">", value: "2023-01-01", logic: "" }
+// ])
+// ==========================
 async function selectPapers(conditions) {
     return await withOracleDB(async (connection) => {
         let sql = "SELECT * FROM Paper";
@@ -239,6 +257,11 @@ async function selectPapers(conditions) {
     });
 }
 
+// ==========================
+// Project Author Attributes
+// Usage: await projectAuthor(["name", "instituteName"])
+// Only returns specified fields from Author
+// ==========================
 async function projectAuthor(attributes) {
     return await withOracleDB(async (connection) => {
         const validAttributes = ["aid", "name", "instituteName", "address"];
@@ -274,6 +297,11 @@ async function findAuthorsByArea(aname) {
     });
 }
 
+// ==========================
+// Aggregation: Count papers per area
+// Usage: await countPapersPerArea()
+// Returns [aname, paper_count] pairs
+// ==========================
 async function countPapersPerArea() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -288,6 +316,11 @@ async function countPapersPerArea() {
     });
 }
 
+// ==========================
+// Aggregation with HAVING: Get users with ≥ minPosts
+// Usage: await getUsersWithMinPosts(3)
+// Returns emails of users meeting threshold
+// ==========================
 async function getUsersWithMinPosts(minPosts) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -305,6 +338,67 @@ async function getUsersWithMinPosts(minPosts) {
 }
 
 
+// ==========================
+// Nested Aggregation with Group By
+// Usage: await getTopAuthorsPerArea()
+// Returns authors whose publication count in an area is above area average
+// ==========================
+async function getTopAuthorsPerArea() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT A.name, P.aname, COUNT(*) AS num_papers
+             FROM Author A
+             JOIN Wrote W ON A.aid = W.aid
+             JOIN Paper P ON W.pid = P.pid
+             GROUP BY A.name, P.aname
+             HAVING COUNT(*) > (
+                SELECT AVG(sub.count_per_author)
+                FROM (
+                    SELECT COUNT(*) AS count_per_author
+                    FROM Author A2
+                    JOIN Wrote W2 ON A2.aid = W2.aid
+                    JOIN Paper P2 ON W2.pid = P2.pid
+                    WHERE P2.aname = P.aname
+                    GROUP BY A2.name
+                ) sub
+             )`
+        );
+        return result.rows;
+    }).catch((err) => {
+        console.error(err.message);
+        return [];
+    });
+}
+
+// ==========================
+// Division Query: Users who posted in ALL areas
+// Usage: await getUsersPostedInAllAreas()
+// Returns emails of users who posted in every Area
+// ==========================
+async function getUsersPostedInAllAreas() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT U.email
+             FROM User U
+             WHERE NOT EXISTS (
+                 SELECT A.aname
+                 FROM Area A
+                 WHERE NOT EXISTS (
+                     SELECT 1
+                     FROM Post P
+                     WHERE P.aname = A.aname AND P.email = U.email
+                 )
+             )`
+        );
+        return result.rows;
+    }).catch((err) => {
+        console.error(err.message);
+        return [];
+    });
+}
+
+
+
 
 
 
@@ -318,5 +412,7 @@ module.exports = {
     projectAuthor,
     findAuthorsByArea,
     countPapersPerArea,
-    getUsersWithMinPosts
+    getUsersWithMinPosts,
+    getTopAuthorsPerArea,
+    getUsersPostedInAllAreas
 };
