@@ -135,7 +135,7 @@ async function listPosts() {
         const result = await connection.execute(
             `SELECT poid, content, TO_CHAR(time, 'HH24:MI:SS') AS time, email, aname
              FROM Post
-             ORDER BY poid`
+             ORDER BY time`
         );
         return result.rows;
     }).catch((err) => {
@@ -474,11 +474,34 @@ async function registerUser(email, name) {
         return false;
     }
 }
+
+// ==========================
+// List all comments for a given post with user names
+// Usage: await listPostCommentsWithUser(poid)
+// Returns: [ [content, name], ... ]
+// ==========================
+async function listPostCommentsWithUser(poid) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT C.content, U.name
+             FROM Comment C
+             JOIN User U ON C.email = U.email
+             WHERE C.poid = :poid
+             ORDER BY C.cid`,
+            [poid]
+        );
+        return result.rows;
+    }).catch((err) => {
+        console.error(err.message);
+        return [];
+    });
+}
+
 //
 module.exports = {
     testOracleConnection,
-    // listPosts,
-    // listPostComments,
+    listPosts,
+    listPostComments,
     // listPapers,
     insertPost,
     updatePost, 
