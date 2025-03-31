@@ -18,7 +18,9 @@ const dbConfig = {
 async function initializeConnectionPool() {
     try {
         await oracledb.createPool(dbConfig);
-        console.log('Connection pool started');
+        console.log('Connection pool started successfully');
+        console.log(`Database connected with user: ${dbConfig.user}`);
+        console.log(`Connected to: ${dbConfig.connectString}`);
     } catch (err) {
         console.error('Initialization error: ' + err.message);
     }
@@ -397,12 +399,56 @@ async function getUsersPostedInAllAreas() {
     });
 }
 
+// new functions
+async function loginUser(email) {
+    console.log('Email value:', email);
+    console.log('Type of email:', typeof email); // 应该输出 "string"
 
+    try {
+        return await withOracleDB(async (connection) => {
+            const result = await connection.execute(
+                `SELECT name FROM USERS WHERE email = :email`,
+                [email]
+            );
+            console.log('login query result:', result.rows);
+            if (result.rows.length > 0) {
+                return result.rows.map(row => row[0]);
+            } else {
+                return [];
+            }
+        });
+    } catch (err) {
+        console.error('Login failed:', err.message);
+        return [];
+    }
+}
 
-
-
-
-
+async function registerUser(email, name) {
+    rid = null;
+    try {
+        return await withOracleDB(async (connection) => {
+            // Check if the user already exists
+            const userCheck = await connection.execute(
+                `SELECT COUNT(*) FROM Users WHERE email = :email`,
+                [email]
+            );
+            if (userCheck.rows[0][0] > 0) {
+                return false;
+            }
+            // Insert new user
+            await connection.execute(
+                `INSERT INTO Users (email, name, rid) VALUES (:email, :name, :rid)`,
+                [email, name, rid],
+                { autoCommit: true }
+            );
+            return true;
+        });
+    } catch (err) {
+        console.error('Registration failed:', err.message);
+        return false;
+    }
+}
+//
 module.exports = {
     testOracleConnection,
     insertPost,
@@ -414,5 +460,7 @@ module.exports = {
     countPapersPerArea,
     getUsersWithMinPosts,
     getTopAuthorsPerArea,
-    getUsersPostedInAllAreas
+    getUsersPostedInAllAreas,
+    loginUser,
+    registerUser
 };

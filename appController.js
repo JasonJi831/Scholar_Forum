@@ -64,5 +64,32 @@ router.get('/count-demotable', async (req, res) => {
     }
 });
 
+router.get('/user-login', async (req, res) => {
+    try {
+        const { email } = req.query;
+
+        const user = await appService.loginUser(email);
+        console.log('User:', user);
+        if (user.length > 0) {
+            res.json({ 
+                success: true, 
+                message: 'User login successful', 
+                user: user[0] 
+            });
+        } else {
+            res.status(404).json({ 
+                success: false, 
+                message: 'User not found'
+            });
+        }
+    } catch (err) {
+        console.error('Error during user login:', err.message);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Internal server error'
+        });
+    }
+});
+
 
 module.exports = router;
