@@ -452,7 +452,7 @@ async function registerUser(email, name) {
 module.exports = {
     testOracleConnection,
     insertPost,
-    updatePost,
+    updatePost, 
     deleteAuthorCascade,
     selectPapers,
     projectAuthor,

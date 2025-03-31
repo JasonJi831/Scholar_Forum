@@ -11,7 +11,12 @@
     <h1>📚 Welcome to Scholar Forum</h1>
     <p>Please enter your email to continue:</p>
     <input type="email" id="emailInput" placeholder="your@email.com" required />
-    <button class="btn-primary" onclick="login()">Login</button>
+    <p>Please enter your name to register:</p>
+    <input type="text" id="nameInput" placeholder="Your Name" required />
+    <div>
+      <button class="btn-primary" onclick="login()">Login</button>
+      <button class="btn-secondary" onclick="register()">Register</button>
+    </div>
   </div>
 
   <!-- 登录后首页内容 -->
@@ -69,23 +74,49 @@
     }
   }
 
+  async function register() {
+      const email = document.getElementById("emailInput").value.trim();
+      const name = document.getElementById("nameInput").value.trim();
+      if (!email || !name) {
+          alert("Please enter both email and name.");
+          return;
+      }
 
-    function logout() {
-      localStorage.removeItem("userEmail");
-      location.reload(); // reload 回到登录界面
+      try {
+          const response = await fetch(`/user-register?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`, {
+              method: 'GET'
+          });
+
+          const result = await response.json();
+
+          if (response.ok && result.message === 'User registered successfully') {
+              alert("Registration successful! You can now log in.");
+          } else {
+              alert(result.error || "Registration failed!");
+          }
+      } catch (err) {
+          console.error('Registration error:', err);
+          alert("An error occurred while registering.");
+      }
     }
 
-    function showMain(email) {
+
+  function logout() {
+      localStorage.removeItem("userEmail");
+      location.reload(); // reload 回到登录界面
+  }
+
+  function showMain(email) {
       document.getElementById("loginBox").style.display = "none";
       document.getElementById("mainContent").style.display = "block";
       document.getElementById("currentUserEmail").textContent = email;
-    }
+  }
 
     // 自动登录
-    const savedEmail = localStorage.getItem("userEmail");
+  const savedEmail = localStorage.getItem("userEmail");
     if (savedEmail) {
       showMain(savedEmail);
-    }
+  }
   </script>
 </body>
 </html>
