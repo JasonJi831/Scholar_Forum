@@ -80,10 +80,10 @@ async function testOracleConnection() {
 
 // ==========================
 // Insert a Post (with FK checks)
-// Usage: await insertPost(poid, content, time, email, aname)
+// Usage: await insertPost(content, email, aname)
 // If Area doesn't exist, it will be auto-inserted with whetherStem = true
 // ==========================
-async function insertPost(poid, content, time, email, aname) {
+async function insertPost(content, email, aname) {
     return await withOracleDB(async (connection) => {
         const userCheck = await connection.execute(
             `SELECT COUNT(*) FROM User WHERE email = :email`,
@@ -104,10 +104,17 @@ async function insertPost(poid, content, time, email, aname) {
             );
         }
 
+        const idResult = await connection.execute(`SELECT MAX(poid) FROM Post`);
+        const maxPoid = idResult.rows[0][0] || 0;
+        const newPoid = maxPoid + 1;
+
+        const now = new Date();
+        const timeStr = now.toTimeString().split(" ")[0]; 
+
         await connection.execute(
             `INSERT INTO Post (poid, content, time, email, aname)
              VALUES (:poid, :content, TO_TIMESTAMP(:time, 'HH24:MI:SS'), :email, :aname)`,
-            [poid, content, time, email, aname],
+            [newPoid, content, timeStr, email, aname],
             { autoCommit: true }
         );
 
@@ -117,6 +124,7 @@ async function insertPost(poid, content, time, email, aname) {
         return false;
     });
 }
+
 
 // ==========================
 // Update a Post (partial updates supported)
