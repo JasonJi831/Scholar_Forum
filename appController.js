@@ -91,5 +91,29 @@ router.get('/user-login', async (req, res) => {
     }
 });
 
+router.get('/user-register', async (req, res) => {
+    // Extract email and name from query parameters
+    const { email, name } = req.query;
+
+    // Check if both parameters are provided
+    if (!email || !name) {
+        return res.status(400).json({ error: 'Missing email or name parameter' });
+    }
+
+    try {
+        // Attempt to register the user
+        const success = await appService.registerUser(email, name);
+        if (success) {
+            res.json({ message: 'User registered successfully' });
+        } else {
+            res.status(409).json({ error: 'User registration failed, user may already exist' });
+        }
+    } catch (err) {
+        console.error('Registration error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 
 module.exports = router;
