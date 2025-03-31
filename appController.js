@@ -114,6 +114,69 @@ router.get('/user-register', async (req, res) => {
     }
 });
 
+router.post('/post', async (req, res) => {
+    const { content, email, aname } = req.body;
+
+    // Validate input
+    if (!content || !email || !aname) {
+        return res.status(400).json({ error: 'Missing required fields: content, email, aname' });
+    }
+
+    try {
+        // Attempt to insert the post
+        const success = await appService.insertPost(content, email, aname);
+        if (success) {
+            res.status(201).json({ message: 'Post created successfully' });
+        } else {
+            res.status(500).json({ error: 'Failed to create post' });
+        }
+    } catch (err) {
+        console.error('Error creating post:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.get('/allPosts', async (req, res) => {
+    try {
+        const rawPosts = await appService.listPosts();
+        console.log("Raw Posts: ", rawPosts);
+
+        const posts = rawPosts.map(post => ({
+            id: post[0],         
+            content: post[1],    
+            time: post[2],       
+            email: post[3],     
+            aname: post[4]    
+        }));
+
+        console.log("Formatted Posts: ", posts);
+
+        if (posts.length > 0) {
+            res.status(200).json({ message: 'Posts retrieved successfully', data: posts });
+        } else {
+            res.status(404).json({ message: 'No posts available' });
+        }
+    } catch (err) {
+        console.error('Error fetching posts:', err.message);
+        res.status(500).json({ error: 'Failed to retrieve posts' });
+    }
+});
+
+router.get('/allAreas', async (req, res) => {
+    try {
+        const areas = await appService.listAllAreas();
+        if (areas.length > 0) {
+            res.status(200).json({ message: 'Areas retrieved successfully', data: areas });
+        } else {
+            res.status(404).json({ message: 'No areas found' });
+        }
+    } catch (err) {
+        console.error('Error fetching areas:', err.message);
+        res.status(500).json({ error: 'Failed to retrieve areas' });
+    }
+});
+
 
 
 module.exports = router;
+
